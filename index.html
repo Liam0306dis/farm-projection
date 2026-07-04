@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Magic Garden — Farm Projection</title>
+<style>
+  :root{--bg:#12141a;--panel:#1b1e27;--panel2:#232733;--line:#2c3140;--txt:#e7e9ee;--dim:#98a0b3;
+        --accent:#c39bff;--accent2:#7ee0c0;--gold:#ffcf5c;--good:#7ee0c0;--warn:#ff9b6b;}
+  *{box-sizing:border-box}
+  body{margin:0;background:var(--bg);color:var(--txt);font:15px/1.5 system-ui,Segoe UI,Roboto,sans-serif;
+       display:flex;justify-content:center;padding:26px 16px 70px}
+  .wrap{width:100%;max-width:640px}
+  h1{font-size:21px;margin:0 0 2px;font-weight:650}
+  .sub{color:var(--dim);font-size:13px;margin-bottom:18px}
+  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px 20px;margin-bottom:16px}
+  label{display:block;font-size:12px;letter-spacing:.03em;text-transform:uppercase;color:var(--dim);margin:0 0 7px}
+  textarea{width:100%;height:80px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);
+           border-radius:9px;padding:10px 12px;font:12px/1.4 ui-monospace,monospace;resize:vertical;outline:none}
+  textarea:focus{border-color:var(--accent)}
+  button.load{margin-top:10px;background:var(--accent);border:none;color:#12141a;border-radius:9px;padding:10px 18px;
+              font-size:14px;font-weight:700;cursor:pointer}
+  .seg{display:flex;gap:7px;flex-wrap:wrap}
+  .seg button{flex:1;min-width:70px;background:var(--panel2);border:1px solid var(--line);color:var(--dim);
+        border-radius:9px;padding:9px;font-size:13px;cursor:pointer;transition:.12s;font-weight:600}
+  .seg button.on{color:#12141a;background:var(--accent);border-color:var(--accent)}
+  .mini{background:var(--panel2);border:1px solid var(--line);color:var(--dim);border-radius:7px;
+        padding:3px 10px;font-size:12px;font-weight:600;cursor:pointer;margin-left:6px;transition:.12s}
+  .mini:hover{color:var(--accent);border-color:var(--accent)}
+  .grp{margin-bottom:14px}
+  .chk{display:flex;align-items:center;gap:10px;margin-bottom:11px;cursor:pointer;font-size:14px}
+  .chk input{width:18px;height:18px;accent-color:var(--accent);cursor:pointer}
+  .friends{display:flex;align-items:center;gap:10px}
+  .friends input{width:64px;background:var(--panel2);border:1px solid var(--line);color:var(--txt);border-radius:8px;padding:7px 9px;font-size:14px;outline:none}
+  .result{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:16px 18px;text-align:center;margin-bottom:12px}
+  .big{font-size:34px;font-weight:750;letter-spacing:-.5px;line-height:1.1;color:var(--gold)}
+  .big small{font-size:15px;color:var(--dim);font-weight:500}
+  .big2{font-size:26px;font-weight:700;color:var(--accent2)}
+  table{width:100%;border-collapse:collapse;font-size:13px;margin-top:4px}
+  td{padding:7px 4px;border-top:1px solid var(--line)}
+  td:last-child{text-align:right;font-variant-numeric:tabular-nums}
+  td:first-child{color:var(--dim)}
+  tr.tot td{border-top:2px solid var(--line);font-weight:750;color:var(--txt)}
+  tr.tot td:last-child{color:var(--accent2)}
+  .pill{display:inline-block;padding:1px 7px;border-radius:20px;font-size:11px;font-weight:700;background:var(--panel);border:1px solid var(--line);margin-left:4px}
+  .warn{color:var(--warn)}
+  .foot{font-size:11.5px;color:var(--dim);margin-top:14px;line-height:1.6}
+  .hide{display:none}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Farm Projection</h1>
+  <div class="sub">Magic Garden · project a completed farm's value &amp; the time to get there</div>
+
+  <div class="card">
+    <label>1 · Copy this, paste into the browser console (F12)</label>
+    <textarea id="grabSrc" readonly style="height:110px" onclick="this.select()"></textarea>
+    <button class="load" id="copyBtn">Copy console script</button>
+    <span id="copyMsg" class="foot" style="margin-left:10px"></span>
+  </div>
+
+  <div class="card">
+    <label>2 · Paste the copied result here</label>
+    <textarea id="json" placeholder='After running the script in-game, paste the JSON it copied to your clipboard here…'></textarea>
+    <button class="load" id="loadBtn">Load</button>
+    <div id="loadMsg" class="foot"></div>
+  </div>
+
+  <div id="panel" class="hide">
+    <div class="card">
+      <label>Tracked species <span class="pill" id="specCount"></span>
+        <button type="button" id="allNone" class="mini">All / none</button></label>
+      <div id="speciesList" style="display:flex;flex-wrap:wrap;gap:6px 14px"></div>
+    </div>
+    <div class="card">
+      <div class="grp"><label>Weather mutation</label>
+        <div class="seg" data-group="weather">
+          <button data-v="" class="on">None</button><button data-v="Frozen">Frozen ×6</button><button data-v="Thundercharged">Thundercharged ×7</button>
+        </div></div>
+      <div class="grp"><label>Colour mutation</label>
+        <div class="seg" data-group="color">
+          <button data-v="" class="on">None</button><button data-v="Gold">Gold ×25</button><button data-v="Rainbow">Rainbow ×50</button>
+        </div></div>
+      <div class="grp"><label>Time mutation</label>
+        <div class="seg" data-group="time">
+          <button data-v="" class="on">None</button><button data-v="Dawnbound">Dawnbound ×7</button><button data-v="Amberbound">Amberbound ×10</button>
+        </div></div>
+      <label class="chk"><input type="checkbox" id="maxSize"> Max size <span class="pill">ProduceScaleBoost I/II</span></label>
+      <label class="chk"><input type="checkbox" id="pgb"> Plant Growth Boost <span class="pill">PlantGrowthBoostII</span></label>
+      <label class="chk"><input type="checkbox" id="growWhile"> Apply mutations while crops grow <span class="pill">overlap grow time</span></label>
+      <label class="chk"><input type="checkbox" id="dh" checked> Double Harvest <span class="pill">value ×</span></label>
+      <label class="chk"><input type="checkbox" id="cr" checked> Crop Refund <span class="pill">value ×</span></label>
+      <div class="friends"><label style="margin:0">Friends in room (bonus)</label><input type="number" id="friends" min="0" max="5" step="1" value="0"></div>
+    </div>
+
+    <div class="result">
+      <div style="font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em">Completed farm value</div>
+      <div class="big" id="valOut">—</div>
+      <div class="foot" id="valSub" style="margin-top:4px"></div>
+    </div>
+    <div class="result">
+      <div style="font-size:12px;color:var(--dim);text-transform:uppercase;letter-spacing:.05em">Time to complete</div>
+      <div class="big2" id="timeOut">—</div>
+    </div>
+
+    <div class="card"><table id="breakdown"></table>
+      <div class="foot" id="notes"></div>
+    </div>
+  </div>
+</div>
+
+<script type="text/plain" id="grabScriptSrc">
+// Magic Garden — Farm Planner data grab. Paste into the browser console (F12).
+(async () => {
+  const w = window;
+  async function getState(){
+    let data = w.playerSlot?.data || w._wsState?.mySlot?.data || w.myGarden;
+    let friends = (typeof w.friendBonus === 'number') ? Math.round((w.friendBonus - 1) / 0.1) : null;
+    if (data?.garden) return { data, friends };
+    const conn = w.MagicCircle_RoomConnection;
+    if (conn?.subscribeToPatches) {
+      console.log('Grabbing room state…');
+      return await new Promise(res => {
+        let done = false;
+        conn.subscribeToPatches((_p, full) => {
+          if (done) return;
+          const slots = full?.child?.data?.userSlots || [];
+          let pid=null; try { pid=new URL(conn.currentWebSocket.url).searchParams.get('playerId'); if(pid&&pid[0]==='"')pid=JSON.parse(pid);}catch(e){}
+          const slot = slots.find(s=>s&&(s.playerId===pid||s.data?.playerId===pid)) || slots.find(s=>s?.data?.garden);
+          if (slot?.data) { done=true; const pl=full?.data?.players; res({ data:slot.data, friends: pl?Math.max(0,pl.length-1):null }); }
+        });
+      });
+    }
+    return { data:null, friends:null };
+  }
+  const { data, friends } = await getState();
+  if (!data?.garden) { console.error('[FarmPlanner] No garden data — is the game loaded?'); return; }
+  const garden = {};
+  for (const [tid, tile] of Object.entries(data.garden.tileObjects || {})) {
+    if (tile.objectType !== 'plant' || !tile.slots?.length) continue;
+    garden[tid] = { species: tile.species, slots: tile.slots.map(s => ({ species: s.species || tile.species, startTime: s.startTime, endTime: s.endTime, targetScale: s.targetScale, mutations: s.mutations || [], slotId: s.slotId })) };
+  }
+  const petMap = {};
+  const add = p => { if (!p || !p.petSpecies || !p.id || petMap[p.id]) return; petMap[p.id] = { petSpecies:p.petSpecies, targetScale:p.targetScale, xp:p.xp, hunger:p.hunger, abilities:p.abilities || [], mutations:p.mutations || [] }; };
+  (data.petSlots || []).forEach(add);
+  (data.inventory?.items || []).filter(i => i.itemType === 'Pet').forEach(add);
+  (data.inventory?.storages || []).filter(s => s.decorId === 'PetHutch').forEach(st => (st.items || []).forEach(add));
+  const out = { friends, garden, pets: Object.values(petMap) };
+  const json = JSON.stringify(out);
+  const nSlots = Object.values(garden).reduce((a, t) => a + t.slots.length, 0);
+  try { await navigator.clipboard.writeText(json); console.log(`%c✅ Copied ${Object.keys(garden).length} tiles / ${nSlots} slots, ${out.pets.length} pets. Paste into the planner.`, 'color:#4ade80;font-weight:bold'); }
+  catch (e) { console.warn('[FarmPlanner] Clipboard blocked — copy the JSON below:'); console.log(json); }
+})();
+</script>
+
+<script>
+// ── Baked game data (plants.json / pets.json, bundle 642) ──────────────────
+const PLANTS = {"Carrot":{"p":20,"m":3},"Cabbage":{"p":42,"m":3},"Strawberry":{"p":14,"m":2},"Aloe":{"p":310,"m":2.5},"Beet":{"p":350,"m":3},"Daisy":{"p":130,"m":2.5},"PurpleDaisy":{"p":9999,"m":2.5},"Clover":{"p":30,"m":3},"FourLeafClover":{"p":7777,"m":3},"Rose":{"p":300,"m":4},"FavaBean":{"p":30,"m":3},"Delphinium":{"p":530,"m":3},"Snowdrop":{"p":250,"m":1.85},"SnowdropDouble":{"p":8888,"m":1.85},"Blueberry":{"p":23,"m":2},"Apple":{"p":800,"m":2},"OrangeTulip":{"p":767,"m":3},"Tomato":{"p":27,"m":2},"Daffodil":{"p":1090,"m":3},"Corn":{"p":36,"m":2},"Watermelon":{"p":2708,"m":3},"Echeveria":{"p":3200,"m":2.75},"Pumpkin":{"p":3700,"m":3},"Cattail":{"p":1800,"m":2.5},"VariegatedCattail":{"p":11111,"m":2.5},"Pear":{"p":3000,"m":2},"Gentian":{"p":10000,"m":3},"Lavender":{"p":20000,"m":3},"Coconut":{"p":12000,"m":3},"PineTree":{"p":75000,"m":3.5},"Banana":{"p":1750,"m":1.7},"Leek":{"p":35000,"m":3},"Lily":{"p":20123,"m":2.75},"Saffron":{"p":50000,"m":3},"Cardoon":{"p":50000,"m":3},"Camellia":{"p":4875,"m":2.5},"Squash":{"p":7000,"m":2.5},"Peach":{"p":9000,"m":3},"BurrosTail":{"p":6000,"m":2.5},"Mushroom":{"p":160000,"m":3.5},"Cactus":{"p":220000,"m":1.8},"Bamboo":{"p":500000,"m":2},"Eggplant":{"p":100000,"m":2.5},"PricklyPear":{"p":75000,"m":2.5},"VioletCort":{"p":600000,"m":3.5},"Chrysanthemum":{"p":18000,"m":2.75},"Date":{"p":15000,"m":2},"Grape":{"p":50000,"m":2},"Poinsettia":{"p":20000,"m":2},"Pepper":{"p":7000,"m":2},"Ube":{"p":2000000,"m":3},"Milkcap":{"p":3000000,"m":3},"Lemon":{"p":50000,"m":3},"PassionFruit":{"p":200000,"m":2},"DragonFruit":{"p":30000,"m":2},"Cacao":{"p":150000,"m":2.5},"Lychee":{"p":50000,"m":2},"Sunflower":{"p":750000,"m":2.5},"Dawnbreaker":{"p":12000000,"m":3},"Starweaver":{"p":10000000,"m":2},"ThunderCelestial":{"p":100000,"m":2},"ThunderCelestialShroomPlant":{"p":1000000,"m":2},"DawnCelestial":{"p":11000000,"m":2.5},"MoonCelestial":{"p":11000000,"m":2}};
+const PETS = {"Worm":{"m":2,"h":12},"Snail":{"m":2,"h":12},"Bee":{"m":2.5,"h":12},"Chicken":{"m":2,"h":24},"Bunny":{"m":2,"h":24},"Dragonfly":{"m":2.5,"h":24},"Pig":{"m":2.5,"h":72},"Cow":{"m":2.5,"h":72},"Turkey":{"m":2.5,"h":72},"Squirrel":{"m":2,"h":100},"Turtle":{"m":2.5,"h":100},"Goat":{"m":2,"h":100},"SnowFox":{"m":2,"h":100},"Stoat":{"m":2,"h":100},"WhiteCaribou":{"m":2.5,"h":100},"Pony":{"m":2,"h":72},"Sheep":{"m":2.5,"h":100},"Horse":{"m":2.5,"h":100},"Ostrich":{"m":2.5,"h":144},"FireHorse":{"m":2.5,"h":144},"Butterfly":{"m":2.5,"h":144},"Peacock":{"m":2.5,"h":144},"Capybara":{"m":2.5,"h":144},"Bat":{"m":2,"h":100},"Platypus":{"m":2,"h":100},"ThunderWolf":{"m":2.5,"h":144}};
+
+const COLOR_MULT = { Gold:25, Rainbow:50 };
+const WEATHER_MULT = { Frozen:6, Thundercharged:7 };
+const TIME_MULT = { Dawnbound:7, Amberbound:10 };
+const WEATHER_TIME_COMBO = {
+  "Frozen+Dawnbound":12, "Frozen+Amberbound":15,
+  "Thundercharged+Dawnbound":13, "Thundercharged+Amberbound":16,
+};
+// Mutation → granter ability + proc-rate multiplier (garden-overview verified).
+const GRANTERS = {
+  Frozen:         { ab:['FrostGranter'],        mult:6.0  },
+  Thundercharged: { ab:['ThunderstruckGranter'],mult:5.0  },
+  Rainbow:        { ab:['RainbowGranter'],       mult:0.72 },
+  Gold:           { ab:['GoldGranter'],          mult:0.72 },
+  Amberbound:     { ab:['AmberlitGranter'],      mult:2.0  },
+  Dawnbound:      { ab:['DawnlitGranter'],       mult:2.0  },
+};
+
+// ── State ──────────────────────────────────────────────────────────────────
+let DATA = null;          // { friends, garden, pets }
+let SLOTS = [];           // flat plant slots
+let tracked = new Set();  // species included in the projection
+const sel = { weather:'', color:'', time:'', maxSize:false, pgb:false, growWhile:false, dh:true, cr:true, friends:0 };
+
+const fmt = n => Math.round(n).toLocaleString('en-US');
+function fmtTime(sec){
+  if(sec == null) return '—';
+  if(sec <= 0) return 'instant';
+  const d=Math.floor(sec/86400), h=Math.floor(sec%86400/3600), m=Math.floor(sec%3600/60);
+  const parts=[]; if(d)parts.push(d+'d'); if(h)parts.push(h+'h'); if(m||(!d&&!h))parts.push(m+'m');
+  return parts.join(' ');
+}
+
+// pet STR = xpComp + scaleComp   (game formula)
+function strOf(p){
+  const pd = PETS[p.petSpecies]; if(!pd || !pd.h || pd.m<=1) return 0;
+  const xpl = Math.floor(3600*pd.h/30);
+  const xpc = Math.min(Math.floor((p.xp||0)/xpl), 30);
+  const sc  = Math.floor((((p.targetScale||1)-1)/(pd.m-1))*20+80) - 30;
+  return Math.max(0, xpc+sc);
+}
+// top-3 STR pets holding one of `abils`, with hunger
+function top3(abils){
+  return (DATA.pets||[]).filter(p => p.hunger>0 && (p.abilities||[]).some(a=>abils.includes(a)))
+    .map(p=>({p, str:strOf(p)})).sort((a,b)=>b.str-a.str).slice(0,3);
+}
+// mean seconds per proc for a set of granter pets (each proc mutates 1 slot)
+function meanWait(pets, mult){
+  if(!pets.length) return null;
+  const ctr = 1 - pets.reduce((acc,{str})=>{
+    const cpm = mult*(str/100);
+    return acc * (1 - (1 - Math.pow(1 - cpm/100, 1/60)));
+  }, 1);
+  return ctr>0 ? 1/ctr : null;
+}
+
+// ── Load ───────────────────────────────────────────────────────────────────
+document.getElementById('loadBtn').onclick = () => {
+  const msg = document.getElementById('loadMsg');
+  try {
+    const j = JSON.parse(document.getElementById('json').value.trim());
+    if(!j.garden) throw new Error('no garden field');
+    DATA = j;
+    SLOTS = [];
+    Object.values(j.garden).forEach(t => (t.slots||[]).forEach(s => { if(PLANTS[s.species]) SLOTS.push(s); }));
+    sel.friends = j.friends ?? 0;
+    document.getElementById('friends').value = sel.friends;
+    // Detected species → tracking toggles (all on by default)
+    const counts = {}; SLOTS.forEach(s => counts[s.species] = (counts[s.species]||0)+1);
+    tracked = new Set(Object.keys(counts));
+    document.getElementById('specCount').textContent = `${tracked.size} species`;
+    document.getElementById('speciesList').innerHTML = Object.keys(counts).sort()
+      .map(sp => `<label class="chk" style="margin:0"><input type="checkbox" data-sp="${sp}" checked> ${sp} <span class="pill">${counts[sp]}</span></label>`).join('');
+    document.querySelectorAll('#speciesList input').forEach(inp => inp.onchange = e => {
+      if(e.target.checked) tracked.add(e.target.dataset.sp); else tracked.delete(e.target.dataset.sp);
+      document.getElementById('specCount').textContent = `${tracked.size} species`;
+      recalc();
+    });
+    // All / none toggle — off when everything's already tracked, on otherwise
+    document.getElementById('allNone').onclick = () => {
+      const on = tracked.size < Object.keys(counts).length;
+      tracked = on ? new Set(Object.keys(counts)) : new Set();
+      document.querySelectorAll('#speciesList input').forEach(inp => inp.checked = on);
+      document.getElementById('specCount').textContent = `${tracked.size} species`;
+      recalc();
+    };
+    msg.innerHTML = `<span style="color:var(--good)">Loaded ${Object.keys(j.garden).length} tiles · ${SLOTS.length} plant slots · ${(j.pets||[]).length} pets</span>`;
+    document.getElementById('panel').classList.remove('hide');
+    recalc();
+  } catch(e){ msg.innerHTML = `<span class="warn">Couldn't parse JSON: ${e.message}</span>`; }
+};
+
+// segmented controls
+document.querySelectorAll('.seg').forEach(seg => seg.addEventListener('click', e => {
+  const b = e.target.closest('button'); if(!b) return;
+  const g = seg.dataset.group;
+  [...seg.children].forEach(x=>x.classList.toggle('on', x===b));
+  sel[g] = b.dataset.v; recalc();
+}));
+document.getElementById('maxSize').onchange = e => { sel.maxSize=e.target.checked; recalc(); };
+document.getElementById('pgb').onchange = e => { sel.pgb=e.target.checked; recalc(); };
+document.getElementById('growWhile').onchange = e => { sel.growWhile=e.target.checked; recalc(); };
+document.getElementById('dh').onchange = e => { sel.dh=e.target.checked; recalc(); };
+document.getElementById('cr').onchange = e => { sel.cr=e.target.checked; recalc(); };
+document.getElementById('friends').oninput = e => { sel.friends=Math.max(0,Math.min(5,+e.target.value||0)); recalc(); };
+
+// ── Calculate ──────────────────────────────────────────────────────────────
+function recalc(){
+  if(!DATA) return;
+  const friendBonus = 1 + Math.min(sel.friends,5)*0.1;
+
+  // Value multiplier from selected mutations
+  const colorMult = COLOR_MULT[sel.color] || 1;
+  let wt = 1;
+  if(sel.weather && sel.time) wt = WEATHER_TIME_COMBO[sel.weather+'+'+sel.time] || Math.max(WEATHER_MULT[sel.weather], TIME_MULT[sel.time]);
+  else if(sel.weather) wt = WEATHER_MULT[sel.weather];
+  else if(sel.time) wt = TIME_MULT[sel.time];
+  const mult = colorMult * wt;
+
+  // Only slots whose species is tracked count toward value & timing
+  const activeSlots = SLOTS.filter(s => tracked.has(s.species));
+
+  // Value: Σ baseSellPrice × mult × scale × friendBonus  (scale = maxScale if Max size, else slot targetScale)
+  let value = 0;
+  activeSlots.forEach(s => {
+    const pd = PLANTS[s.species];
+    const scale = sel.maxSize ? pd.m : (s.targetScale || 1);
+    value += pd.p * mult * scale * friendBonus;
+  });
+
+  // ── Times ──
+  const rows = [];
+  let granterSec = 0;   // mutation + max-size work (grow time handled separately)
+  const notes = [];
+
+  // Double Harvest & Crop Refund — passive value multipliers (top-3 pets each)
+  let dhMult = 1, crMult = 1;
+  if(sel.dh){
+    const pets = top3(['DoubleHarvest']);
+    if(pets.length){ dhMult = 1 + pets.reduce((s,{str})=>s+0.05*str/100, 0); notes.push(`Double Harvest: value ×${dhMult.toFixed(3)} (STR ${pets.map(x=>x.str).join('/')}).`); }
+    else notes.push('Double Harvest checked but you own no DoubleHarvest pet.');
+  }
+  if(sel.cr){
+    const pets = top3(['ProduceRefund']);
+    if(pets.length){ const P = pets.reduce((s,{str})=>s+0.20*str/100, 0); crMult = P<0.9999 ? 1/(1-P) : 10000; notes.push(`Crop Refund: value ×${crMult.toFixed(2)} (refund chain, STR ${pets.map(x=>x.str).join('/')}).`); }
+    else notes.push('Crop Refund checked but you own no ProduceRefund pet.');
+  }
+  value *= dhMult * crMult;
+
+  // Grow time — longest species grow cycle (endTime - startTime)
+  let growSec = 0;
+  const perSpecies = {};
+  activeSlots.forEach(s => {
+    if(s.startTime && s.endTime && s.endTime>s.startTime){
+      const g = (s.endTime - s.startTime)/1000;
+      perSpecies[s.species] = Math.max(perSpecies[s.species]||0, g);
+    }
+  });
+  growSec = Object.values(perSpecies).reduce((a,b)=>Math.max(a,b),0);
+  let growLabel = 'Grow farm (parallel — slowest crop)';
+  if(sel.pgb){
+    const pets = top3(['PlantGrowthBoostII','Plant Growth Boost II']);
+    if(pets.length){
+      let rate = 0;
+      pets.forEach(({str}) => { rate += (str/100*5)*60*(1-Math.pow(1-0.27*str/100,1/60)); });
+      growSec = growSec/(1+rate);
+      growLabel += ` <span class="pill">PGB ×${pets.length}</span>`;
+    } else { notes.push('Plant Growth Boost checked but you own no PlantGrowthBoostII pet — grow time unreduced.'); }
+  }
+  rows.push([growLabel, fmtTime(growSec)]);
+
+  // Mutation passes — each selected mutation, best-3 granter pets, 1 proc per missing slot
+  [['weather',sel.weather],['color',sel.color],['time',sel.time]].forEach(([grp,mut]) => {
+    if(!mut) return;
+    const g = GRANTERS[mut];
+    const pets = top3(g.ab);
+    const missing = activeSlots.length;   // assume a fresh farm — every slot needs the mutation
+    if(!pets.length){ rows.push([`<span class="warn">${mut}</span>`, `<span class="warn">no ${g.ab[0]} pet</span>`]); notes.push(`No pet with ${g.ab[0]} — ${mut} can't be applied.`); return; }
+    const mw = meanWait(pets, g.mult);
+    if(mw==null){ rows.push([mut, '—']); return; }
+    const t = missing * mw;
+    rows.push([`Apply ${mut} <span class="pill">${g.ab[0].replace('Granter','')} STR ${pets.map(x=>x.str).join('/')}</span>`, `${fmtTime(t)}`]);
+    granterSec += t;
+    notes.push(`${mut}: ${missing} slots × ${fmtTime(mw)}/proc (STR ${pets.map(x=>x.str).join('/')}).`);
+  });
+
+  // Max size — geometric boosts to each slot's maxScale
+  if(sel.maxSize){
+    const II = top3(['ProduceScaleBoostII','Crop Size Boost II']);
+    const pool = II.length ? II : top3(['ProduceScaleBoost']);
+    const mult2 = II.length ? 0.40 : 0.30;
+    const abLabel = II.length ? 'ScaleBoostII' : 'ScaleBoost';
+    if(!pool.length){ rows.push(['<span class="warn">Max size</span>','<span class="warn">no boost pet</span>']); notes.push('No ProduceScaleBoost pet — max size can\'t be reached.'); }
+    else {
+      const avgStr = pool.reduce((a,b)=>a+b.str,0)/pool.length;
+      const boostMult = 1 + avgStr/1000;
+      // Each proc boosts EVERY slot at once, so procs needed = the worst slot's count.
+      let boosts = 0;
+      activeSlots.forEach(s => {
+        const ms = PLANTS[s.species].m; let sc = s.targetScale || 1;
+        if(sc>=ms) return; let b=0; while(sc<ms){ sc*=boostMult; b++; if(b>500)break; } boosts = Math.max(boosts, b);
+      });
+      const mw = meanWait(pool, mult2);
+      if(mw!=null && boosts>0){
+        const t = boosts * mw;
+        rows.push([`Grow to max size <span class="pill">${abLabel} STR ${pool.map(x=>x.str).join('/')}</span>`, fmtTime(t)]);
+        granterSec += t;
+        notes.push(`Max size: ${fmt(boosts)} boosts (whole garden per proc) × ${fmtTime(mw)}/proc (×${boostMult.toFixed(3)}/boost, STR ${pool.map(x=>x.str).join('/')}).`);
+      } else if(boosts===0){ rows.push(['Grow to max size','already max']); }
+    }
+  }
+
+  // Total time — if mutations are applied while growing, the granter work overlaps
+  // the grow time, so total = max(grow, granter). Otherwise they're sequential.
+  // Plant Growth Boost is granted *before* mutations (separate active team), so it
+  // can't overlap the mutation work — forcing grow + granter to run sequentially.
+  const overlap = sel.growWhile && !sel.pgb;
+  const total = overlap ? Math.max(growSec, granterSec) : (growSec + granterSec);
+  if(sel.growWhile && sel.pgb)
+    notes.push('Plant Growth Boost uses its own active team, so it must finish before the mutation team starts — grow and mutation time are added, not overlapped.');
+  else if(sel.growWhile) notes.push(growSec >= granterSec
+    ? 'Mutations/size finish before crops mature — grow time dominates (mutation work is hidden under it).'
+    : 'Mutation/size work runs past grow time — the overflow past maturity is what adds to the total.');
+
+  // ── Render ──
+  document.getElementById('valOut').innerHTML = `${fmt(value)} <small>coins</small>`;
+  document.getElementById('valSub').innerHTML =
+    `${activeSlots.length}${activeSlots.length!==SLOTS.length?`/${SLOTS.length}`:''} slots · mutation ×${mult} · scale ${sel.maxSize?'max':'current'} · friend ×${friendBonus.toFixed(1)}` +
+    (dhMult>1 ? ` · dbl-harvest ×${dhMult.toFixed(2)}` : '') +
+    (crMult>1 ? ` · refund ×${crMult.toFixed(2)}` : '');
+  document.getElementById('timeOut').textContent = fmtTime(total);
+  document.getElementById('breakdown').innerHTML =
+    rows.map(r=>`<tr><td>${r[0]}</td><td>${r[1]}</td></tr>`).join('') +
+    `<tr class="tot"><td>Total time</td><td>${fmtTime(total)}</td></tr>`;
+  document.getElementById('notes').innerHTML = notes.length
+    ? '<b>Assumptions &amp; detail</b><br>• Passes are sequential (swap pet team between each). ' +
+      '• Only your <b>top-3 STR</b> pets per granter are used (one active team). ' + notes.map(n=>'• '+n).join('<br>')
+    : '';
+}
+
+// Browsers restore checkbox state across reloads (bfcache/form restoration),
+// which desyncs the DOM from `sel`. Force each checkbox to its sel default.
+['maxSize','pgb','growWhile','dh','cr'].forEach(id => {
+  const el = document.getElementById(id); if(el){ el.checked = sel[id]; }
+});
+
+// ── Console-grab script: populate the read-only box + copy button ──
+const grabText = document.getElementById('grabScriptSrc').textContent.trim();
+document.getElementById('grabSrc').value = grabText;
+document.getElementById('copyBtn').onclick = async () => {
+  const msg = document.getElementById('copyMsg');
+  try { await navigator.clipboard.writeText(grabText); msg.innerHTML = '<span style="color:var(--good)">Copied — paste into the browser console (F12)</span>'; }
+  catch(e){ const t=document.getElementById('grabSrc'); t.focus(); t.select(); document.execCommand('copy'); msg.innerHTML = '<span style="color:var(--good)">Selected — press Ctrl+C</span>'; }
+};
+</script>
+</body>
+</html>
