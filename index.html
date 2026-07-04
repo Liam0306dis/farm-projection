@@ -61,8 +61,9 @@
   </div>
 
   <div class="card">
-    <label>2 · Paste the copied result here</label>
-    <textarea id="json" placeholder='After running the script in-game, paste the JSON it copied to your clipboard here…'></textarea>
+    <label>2 · Load the downloaded file <span class="foot">(or paste its contents below)</span></label>
+    <input type="file" id="fileIn" accept=".txt,.json,text/plain,application/json" style="margin-bottom:10px">
+    <textarea id="json" placeholder='Or paste the JSON from magicgarden-farm.txt here…'></textarea>
     <button class="load" id="loadBtn">Load</button>
     <div id="loadMsg" class="foot"></div>
   </div>
@@ -112,6 +113,7 @@
 
 <script type="text/plain" id="grabScriptSrc">
 // Magic Garden — Farm Planner data grab. Paste into the browser console (F12).
+// Downloads magicgarden-farm.txt — load that file into the planner.
 (async () => {
   const w = window;
   async function getState(){
@@ -149,8 +151,12 @@
   const out = { friends, garden, pets: Object.values(petMap) };
   const json = JSON.stringify(out);
   const nSlots = Object.values(garden).reduce((a, t) => a + t.slots.length, 0);
-  try { await navigator.clipboard.writeText(json); console.log(`%c✅ Copied ${Object.keys(garden).length} tiles / ${nSlots} slots, ${out.pets.length} pets. Paste into the planner.`, 'color:#4ade80;font-weight:bold'); }
-  catch (e) { console.warn('[FarmPlanner] Clipboard blocked — copy the JSON below:'); console.log(json); }
+  const url = URL.createObjectURL(new Blob([json], { type: 'text/plain' }));
+  const a = document.createElement('a');
+  a.href = url; a.download = 'magicgarden-farm.txt';
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  console.log(`%c✅ Downloaded magicgarden-farm.txt — ${Object.keys(garden).length} tiles / ${nSlots} slots, ${out.pets.length} pets. Upload it into the planner.`, 'color:#4ade80;font-weight:bold');
 })();
 </script>
 
@@ -215,6 +221,13 @@ function meanWait(pets, mult){
 }
 
 // ── Load ───────────────────────────────────────────────────────────────────
+// File picker — read the downloaded .txt into the box and load it automatically
+document.getElementById('fileIn').onchange = e => {
+  const f = e.target.files[0]; if(!f) return;
+  const r = new FileReader();
+  r.onload = () => { document.getElementById('json').value = r.result; document.getElementById('loadBtn').click(); };
+  r.readAsText(f);
+};
 document.getElementById('loadBtn').onclick = () => {
   const msg = document.getElementById('loadMsg');
   try {
