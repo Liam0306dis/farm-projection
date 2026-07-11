@@ -46,6 +46,11 @@
   .warn{color:var(--warn)}
   .foot{font-size:11.5px;color:var(--dim);margin-top:14px;line-height:1.6}
   .hide{display:none}
+  .calc-links{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:10px}
+  .calc-link{display:block;padding:11px 12px;background:var(--panel2);border:1px solid var(--line);border-radius:9px;color:var(--txt);text-decoration:none}
+  .calc-link:hover{border-color:var(--accent)}
+  .calc-link b{display:block;font-size:13px;margin-bottom:3px}
+  .calc-link span{display:block;font-size:11.5px;color:var(--dim);line-height:1.35}
 </style>
 </head>
 <body>
@@ -107,6 +112,17 @@
 
     <div class="card"><table id="breakdown"></table>
       <div class="foot" id="notes"></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <label>Other tools</label>
+    <div class="calc-links">
+      <a class="calc-link" href="https://discord.com/channels/808935495543160852/1490498595219308785/1490498595219308785"><b>Garden Overview</b><span>Open the Garden Overview userscript post on Discord.</span></a>
+      <a class="calc-link" href="https://liam0306dis.github.io/petfood/"><b>Pet Feeding</b><span>Work out food plants and seeds needed to keep pets fed.</span></a>
+      <a class="calc-link" href="https://liam0306dis.github.io/magiccalc/"><b>Granter</b><span>Estimate pet ability chances, wait times, and egg growth boosts.</span></a>
+      <a class="calc-link" href="https://liam0306dis.github.io/magic-dust-calc/"><b>Magic Dust</b><span>Estimate pet dust value and expected dust from eggs.</span></a>
+      <a class="calc-link" href="https://liam0306dis.github.io/capsule-calc/"><b>Dawn Capsule</b><span>Estimate capsules per Dawn and compare capture cadence options.</span></a>
     </div>
   </div>
 </div>
