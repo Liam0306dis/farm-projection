@@ -217,7 +217,7 @@ const GRANTERS = {
   Rainbow:        { ab:['RainbowGranter'],       mult:0.72 },
   Gold:           { ab:['GoldGranter'],          mult:0.72 },
   Amberbound:     { ab:['AmberlitGranter'],      mult:2.0  },
-  Dawnbound:      { ab:['DawnlitGranter'],       mult:2.0  },
+  Dawnbound:      { ab:['DawnlitGranter'],       mult:4.0  },
 };
 
 // ── State ──────────────────────────────────────────────────────────────────
@@ -404,7 +404,7 @@ function recalc(){
     if(!pool.length){ rows.push(['<span class="warn">Max size</span>','<span class="warn">no boost pet</span>']); notes.push('No ProduceScaleBoost pet — max size can\'t be reached.'); }
     else {
       const avgStr = pool.reduce((a,b)=>a+b.str,0)/pool.length;
-      const boostMult = 1 + avgStr/1000;
+      const boostMult = 1 + (II.length ? 0.10 : 0.06) * avgStr/100;
       // Each proc boosts EVERY slot at once, so procs needed = the worst slot's count.
       let boosts = 0;
       activeSlots.forEach(s => {
