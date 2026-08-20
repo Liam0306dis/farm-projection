@@ -212,7 +212,9 @@
       } catch (_) {}
     }
     if (pid) {
-      const byId = slots.find(entry => entry?.playerId === pid);
+      // A slot's own id moved from playerId to userId and carries the same value; the old name is
+      // kept so older game builds still match.
+      const byId = slots.find(entry => entry?.userId === pid || entry?.playerId === pid);
       if (byId) return byId;
     }
     // A single occupied slot can only be yours. In a lobby there is no such certainty, so this
