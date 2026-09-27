@@ -69,9 +69,35 @@
     .calc-link{flex-basis:100%;max-width:none}
   }
 </style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style id="mg-theme">
+  /* Shared look for every Magic Garden tool, loaded after the page's own styles so these win. */
+  :root {
+    --bg:#0d1010; --panel:#151a18; --panel2:#1c231f; --line:rgba(255,255,255,.09);
+    --text:#eef2ef; --txt:#eef2ef; --dim:#a7b0aa; --faint:#7d8880;
+    --accent:#b89cff; --accent2:#7ee0c0; --good:#65d69a; --gold:#f5c542; --warn:#fbbf24; --bad:#f87171;
+  }
+  html { color-scheme:dark; }
+  body {
+    background:radial-gradient(900px 420px at 50% -160px, rgba(184,156,255,.11), transparent 70%) no-repeat, var(--bg);
+    font-family:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  }
+  .card { box-shadow:0 1px 0 rgba(255,255,255,.03) inset, 0 8px 24px rgba(0,0,0,.18); }
+  .mg-nav { display:flex; margin:0 0 16px; }
+  .mg-nav a { display:inline-flex; align-items:center; gap:6px; padding:5px 12px; border:1px solid var(--line); border-radius:999px; background:var(--panel); color:var(--dim); font-size:12.5px; text-decoration:none; }
+  .mg-nav a:hover { color:var(--text); border-color:var(--accent); }
+  :focus-visible { outline:2px solid var(--accent); outline-offset:2px; }
+  input:focus, select:focus, textarea:focus { border-color:var(--accent); }
+  .calc-link { transition:border-color .15s, background .15s; }
+  .calc-link:hover { border-color:var(--accent); }
+  .calc-link b::after { content:" \2197"; color:var(--faint); font-weight:400; }
+</style>
 </head>
 <body>
 <div class="wrap">
+  <nav class="mg-nav" aria-label="Site"><a href="https://liam0306dis.github.io/hub/">&larr; All Magic Garden tools</a></nav>
   <h1>Farm Projection</h1>
   <div class="sub">Magic Garden · project a completed farm's value &amp; the time to get there</div>
 
@@ -109,8 +135,8 @@
         <div class="seg" data-group="time">
           <button data-v="" class="on">None</button><button data-v="Dawnbound">Dawnbound ×7</button><button data-v="Amberbound">Amberbound ×10</button>
         </div></div>
-      <label class="chk"><input type="checkbox" id="maxSize"> Max size <span class="pill">ProduceScaleBoost I/II</span></label>
-      <label class="chk"><input type="checkbox" id="pgb"> Plant Growth Boost <span class="pill">PlantGrowthBoostII</span></label>
+      <label class="chk"><input type="checkbox" id="maxSize"> Max size <span class="pill">Crop Size Boost I/II</span></label>
+      <label class="chk"><input type="checkbox" id="pgb"> Plant Growth Boost <span class="pill">Plant Growth Boost I/II</span></label>
       <label class="chk"><input type="checkbox" id="growWhile"> Apply mutations while crops grow <span class="pill">overlap grow time</span></label>
       <label class="chk"><input type="checkbox" id="dh" checked> Double Harvest <span class="pill">value ×</span></label>
       <label class="chk"><input type="checkbox" id="cr" checked> Crop Refund <span class="pill">value ×</span></label>
@@ -135,14 +161,12 @@
   <div class="card">
     <label>Other tools</label>
     <div class="calc-links">
-      <a class="calc-link" href="https://discord.com/channels/808935495543160852/1532163413738782740/1532163413738782740"><b>Garden Companion</b><span>Open the Garden Companion userscript post on Discord.</span></a>
-      <a class="calc-link" href="https://discord.com/channels/808935495543160852/1490498595219308785/1490498595219308785"><b>Garden Overview</b><span>Open the Garden Overview userscript post on Discord.</span></a>
-      <a class="calc-link" href="https://discord.com/channels/808935495543160852/1526739574896722082/1526739574896722082"><b>Coin Finder Silencer</b><span>Open the Coin Finder Silencer userscript post on Discord.</span></a>
-      <a class="calc-link" href="https://discord.com/channels/808935495543160852/1527680568630968411/1527680568630968411"><b>Drag to Move Plants</b><span>Open the Drag to Move Plants userscript post on Discord.</span></a>
-      <a class="calc-link" href="https://liam0306dis.github.io/petfood/"><b>Pet Feeding</b><span>See which is the best food for your pets and work out how many food plants/seeds you will go through.</span></a>
-      <a class="calc-link" href="https://liam0306dis.github.io/magiccalc/"><b>Granter</b><span>Estimate pet ability chances, wait times, and egg growth boosts.</span></a>
+      <a class="calc-link" href="https://discord.com/channels/808935495543160852/1532163413738782740/1532163413738782740"><b>Garden Companion</b><span>Open the Garden Companion userscript post on Discord. Includes the old Garden Overview, Coin Finder Silencer and Drag to Move Plants.</span></a>
+      <a class="calc-link" href="https://liam0306dis.github.io/petfood/"><b>Pet Feeding</b><span>Find the best food for your pets and how many plants or seeds they get through.</span></a>
+      <a class="calc-link" href="https://liam0306dis.github.io/hunger/"><b>Pet Hunger</b><span>Check whether Hunger Restore and Hunger Boost keep a pet team fed.</span></a>
+      <a class="calc-link" href="https://liam0306dis.github.io/magiccalc/"><b>Granter &amp; Abilities</b><span>Pet ability chances, wait times, and growth and hatch boosts.</span></a>
       <a class="calc-link" href="https://liam0306dis.github.io/magic-dust-calc/"><b>Magic Dust</b><span>Estimate pet dust value and expected dust from eggs.</span></a>
-      <a class="calc-link" href="https://liam0306dis.github.io/capsule-calc/"><b>Dawn Capsule</b><span>Estimate capsules per Dawn and compare capture cadence options.</span></a>
+      <a class="calc-link" href="https://liam0306dis.github.io/capsule-calc/"><b>Capsules</b><span>Expected Dawn and Amber capsules and the best capture cadence.</span></a>
       <a class="calc-link" href="https://liam0306dis.github.io/celestial-layout/"><b>Celestial Placement</b><span>Plan celestial placements with Dawn and Amber mutation coverage.</span></a>
       <a class="calc-link" href="https://liam0306dis.github.io/garden-layout/"><b>Garden Layout Planner</b><span>Plan your whole farm layout - plants, mutations and decorations.</span></a>
     </div>
@@ -249,7 +273,7 @@
   const garden = {};
   for (const [tid, tile] of Object.entries(data.garden.tileObjects || {})) {
     if (tile.objectType !== 'plant' || !tile.slots?.length) continue;
-    garden[tid] = { species: tile.species, slots: tile.slots.map(s => ({ species: s.species || tile.species, startTime: s.startTime, endTime: s.endTime, targetScale: s.targetScale, mutations: s.mutations || [], slotId: s.slotId })) };
+    garden[tid] = { species: tile.species, slots: tile.slots.map(s => ({ species: s.species || tile.species, startTime: s.startTime, endTime: s.endTime, size: s.size, targetScale: s.targetScale, mutations: s.mutations || [], slotId: s.slotId })) };
   }
   const petMap = {};
   const add = p => { if (!p || !p.petSpecies || !p.id || petMap[p.id]) return; petMap[p.id] = { petSpecies:p.petSpecies, targetScale:p.targetScale, xp:p.xp, hunger:p.hunger, abilities:p.abilities || [], mutations:p.mutations || [] }; };
@@ -269,9 +293,9 @@
 </script>
 
 <script>
-// ── Baked game data (plants.json / pets.json, bundle 642) ──────────────────
-const PLANTS = {"Carrot":{"p":20,"m":3},"Cabbage":{"p":42,"m":3},"Strawberry":{"p":14,"m":2},"Aloe":{"p":310,"m":2.5},"Beet":{"p":350,"m":3},"Daisy":{"p":130,"m":2.5},"PurpleDaisy":{"p":9999,"m":2.5},"Clover":{"p":30,"m":3},"FourLeafClover":{"p":7777,"m":3},"Rose":{"p":300,"m":4},"FavaBean":{"p":30,"m":3},"Delphinium":{"p":530,"m":3},"Snowdrop":{"p":250,"m":1.85},"SnowdropDouble":{"p":8888,"m":1.85},"Blueberry":{"p":23,"m":2},"Apple":{"p":800,"m":2},"OrangeTulip":{"p":767,"m":3},"Tomato":{"p":27,"m":2},"Daffodil":{"p":1090,"m":3},"Corn":{"p":36,"m":2},"Watermelon":{"p":2708,"m":3},"Echeveria":{"p":3200,"m":2.75},"Pumpkin":{"p":3700,"m":3},"Cattail":{"p":1800,"m":2.5},"VariegatedCattail":{"p":11111,"m":2.5},"Pear":{"p":3000,"m":2},"Gentian":{"p":10000,"m":3},"Lavender":{"p":20000,"m":3},"Coconut":{"p":12000,"m":3},"PineTree":{"p":75000,"m":3.5},"Banana":{"p":1750,"m":1.7},"Leek":{"p":35000,"m":3},"Lily":{"p":20123,"m":2.75},"Saffron":{"p":50000,"m":3},"Cardoon":{"p":50000,"m":3},"Camellia":{"p":4875,"m":2.5},"Squash":{"p":7000,"m":2.5},"Peach":{"p":9000,"m":3},"BurrosTail":{"p":6000,"m":2.5},"Mushroom":{"p":160000,"m":3.5},"Cactus":{"p":220000,"m":1.8},"Bamboo":{"p":500000,"m":2},"Eggplant":{"p":100000,"m":2.5},"PricklyPear":{"p":75000,"m":2.5},"VioletCort":{"p":600000,"m":3.5},"Chrysanthemum":{"p":18000,"m":2.75},"Date":{"p":15000,"m":2},"Grape":{"p":50000,"m":2},"Poinsettia":{"p":20000,"m":2},"Pepper":{"p":7000,"m":2},"Ube":{"p":2000000,"m":3},"Milkcap":{"p":3000000,"m":3},"Lemon":{"p":50000,"m":3},"PassionFruit":{"p":200000,"m":2},"DragonFruit":{"p":30000,"m":2},"Cacao":{"p":150000,"m":2.5},"Lychee":{"p":50000,"m":2},"Sunflower":{"p":750000,"m":2.5},"Dawnbreaker":{"p":12000000,"m":3},"Starweaver":{"p":10000000,"m":2},"ThunderCelestial":{"p":100000,"m":2},"ThunderCelestialShroomPlant":{"p":1000000,"m":2},"DawnCelestial":{"p":11000000,"m":2.5},"MoonCelestial":{"p":11000000,"m":2}};
-const PETS = {"Worm":{"m":2,"h":12},"Snail":{"m":2,"h":12},"Bee":{"m":2.5,"h":12},"Chicken":{"m":2,"h":24},"Bunny":{"m":2,"h":24},"Dragonfly":{"m":2.5,"h":24},"Pig":{"m":2.5,"h":72},"Cow":{"m":2.5,"h":72},"Turkey":{"m":2.5,"h":72},"Squirrel":{"m":2,"h":100},"Turtle":{"m":2.5,"h":100},"Goat":{"m":2,"h":100},"SnowFox":{"m":2,"h":100},"Stoat":{"m":2,"h":100},"WhiteCaribou":{"m":2.5,"h":100},"Pony":{"m":2,"h":72},"Sheep":{"m":2.5,"h":100},"Horse":{"m":2.5,"h":100},"Ostrich":{"m":2.5,"h":144},"FireHorse":{"m":2.5,"h":144},"Butterfly":{"m":2.5,"h":144},"Peacock":{"m":2.5,"h":144},"Capybara":{"m":2.5,"h":144},"Bat":{"m":2,"h":100},"Platypus":{"m":2,"h":100},"ThunderWolf":{"m":2.5,"h":144}};
+// ── Baked game data (crop price p / maxSizeMultiplier m, pet maxScale m / hoursToMature h — bundle 1294) ──
+const PLANTS = {"Carrot":{"p":20,"m":3},"Cabbage":{"p":42,"m":3},"Strawberry":{"p":14,"m":2},"Aloe":{"p":310,"m":2.5},"Beet":{"p":350,"m":3},"Daisy":{"p":130,"m":2.5},"PurpleDaisy":{"p":9999,"m":2.5},"Clover":{"p":30,"m":3},"FourLeafClover":{"p":7777,"m":3},"Rose":{"p":300,"m":4},"FavaBean":{"p":30,"m":3},"Delphinium":{"p":530,"m":3},"Snowdrop":{"p":250,"m":1.85},"SnowdropDouble":{"p":8888,"m":1.85},"Blueberry":{"p":23,"m":2},"Apple":{"p":800,"m":2},"OrangeTulip":{"p":767,"m":3},"Tomato":{"p":27,"m":2},"Daffodil":{"p":1090,"m":3},"Corn":{"p":36,"m":2},"Watermelon":{"p":2708,"m":3},"Echeveria":{"p":3200,"m":2.75},"Pumpkin":{"p":3700,"m":3},"Cattail":{"p":1800,"m":2.5},"VariegatedCattail":{"p":11111,"m":2.5},"Pear":{"p":3000,"m":2},"Gentian":{"p":10000,"m":3},"Lavender":{"p":20000,"m":3},"Coconut":{"p":12000,"m":3},"PineTree":{"p":75000,"m":3.5},"Banana":{"p":1750,"m":1.7},"Leek":{"p":35000,"m":3},"Lily":{"p":20123,"m":2.75},"Saffron":{"p":50000,"m":3},"Cardoon":{"p":50000,"m":3},"Camellia":{"p":4875,"m":2.5},"Squash":{"p":7000,"m":2.5},"Peach":{"p":9000,"m":3},"BurrosTail":{"p":6000,"m":2.5},"Persimmon":{"p":25000,"m":2.5},"Mushroom":{"p":160000,"m":3.5},"Cactus":{"p":220000,"m":1.8},"Bamboo":{"p":500000,"m":2},"Eggplant":{"p":100000,"m":2.5},"PricklyPear":{"p":75000,"m":2.5},"VioletCort":{"p":600000,"m":3.5},"Chrysanthemum":{"p":18000,"m":2.75},"Date":{"p":15000,"m":2},"Grape":{"p":50000,"m":2},"Poinsettia":{"p":20000,"m":2},"Habanero":{"p":15000,"m":2.5},"Pepper":{"p":7000,"m":2},"Ube":{"p":2000000,"m":3},"Milkcap":{"p":3000000,"m":3},"Lemon":{"p":50000,"m":3},"PassionFruit":{"p":200000,"m":2},"DragonFruit":{"p":30000,"m":2},"Cacao":{"p":150000,"m":2.5},"Lychee":{"p":50000,"m":2},"Sunflower":{"p":750000,"m":2.5},"Marigold":{"p":1000000,"m":2.5},"Dawnbreaker":{"p":12000000,"m":3},"Emberbloom":{"p":5000000,"m":2.5},"Embercrown":{"p":15000000,"m":2.5},"Starweaver":{"p":10000000,"m":2},"ThunderCelestial":{"p":100000,"m":2},"ThunderCelestialShroomPlant":{"p":1000000,"m":2},"DawnCelestial":{"p":11000000,"m":2.5},"MoonCelestial":{"p":11000000,"m":2}};
+const PETS = {"Worm":{"m":2,"h":12},"Snail":{"m":2,"h":12},"Bee":{"m":2.5,"h":12},"Chicken":{"m":2,"h":24},"Bunny":{"m":2,"h":24},"Dragonfly":{"m":2.5,"h":24},"Pig":{"m":2.5,"h":72},"Cow":{"m":2.5,"h":72},"Turkey":{"m":2.5,"h":72},"Squirrel":{"m":2,"h":100},"Turtle":{"m":2.5,"h":100},"Goat":{"m":2,"h":100},"SnowFox":{"m":2,"h":100},"Stoat":{"m":2,"h":100},"WhiteCaribou":{"m":2.5,"h":100},"Pony":{"m":2,"h":72},"Sheep":{"m":2.5,"h":100},"Horse":{"m":2.5,"h":100},"Ostrich":{"m":2.5,"h":144},"FireHorse":{"m":2.5,"h":144},"Rooster":{"m":2.5,"h":144},"RedFox":{"m":2.5,"h":144},"Phoenix":{"m":2.5,"h":168},"Butterfly":{"m":2.5,"h":144},"Peacock":{"m":2.5,"h":144},"Capybara":{"m":2.5,"h":144},"Bat":{"m":2,"h":100},"Platypus":{"m":2,"h":100},"ThunderWolf":{"m":2.5,"h":144}};
 
 const COLOR_MULT = { Gold:25, Rainbow:50 };
 const WEATHER_MULT = { Frozen:6, Thundercharged:7 };
@@ -304,6 +328,19 @@ function fmtTime(sec){
   const parts=[]; if(d)parts.push(d+'d'); if(h)parts.push(h+'h'); if(m||(!d&&!h))parts.push(m+'m');
   return parts.join(' ');
 }
+
+/**
+ * A crop's size on the game's 50 to 100 scale (the percentage on its card). Current farms store it
+ * as size; older grabs only carried targetScale, which is converted back to the same scale.
+ */
+function slotSize(s){
+  const m = PLANTS[s.species]?.m || 1;
+  if(Number.isFinite(s.size)) return Math.min(100, Math.max(50, Math.round(s.size)));
+  if(Number.isFinite(s.targetScale) && m > 1) return Math.min(100, Math.max(50, 50 + 50*(s.targetScale-1)/(m-1)));
+  return 50;
+}
+// The sell multiplier for a size: 1 at 50%, the crop's maxSizeMultiplier at 100% (game formula).
+const scaleForSize = (species, size) => 1 + ((PLANTS[species]?.m || 1) - 1) * (size - 50) / 50;
 
 // pet STR = xpComp + scaleComp   (game formula)
 function strOf(p){
@@ -405,7 +442,7 @@ function recalc(){
   let value = 0;
   activeSlots.forEach(s => {
     const pd = PLANTS[s.species];
-    const scale = sel.maxSize ? pd.m : (s.targetScale || 1);
+    const scale = sel.maxSize ? pd.m : scaleForSize(s.species, slotSize(s));
     value += pd.p * mult * scale * friendBonus;
   });
 
@@ -440,13 +477,19 @@ function recalc(){
   growSec = Object.values(perSpecies).reduce((a,b)=>Math.max(a,b),0);
   let growLabel = 'Grow farm (parallel — slowest crop)';
   if(sel.pgb){
-    const pets = top3(['PlantGrowthBoostII','Plant Growth Boost II']);
+    // Every Plant Growth Boost pet on the team counts, each with its own tier: chance per minute and
+    // minutes taken off, both scaled by the pet's STR.
+    const PGB = { PlantGrowthBoost:{ c:.24, min:3 }, PlantGrowthBoostII:{ c:.27, min:5 }, PlantGrowthBoostIII:{ c:.30, min:7 } };
+    const pets = top3(Object.keys(PGB));
     if(pets.length){
       let rate = 0;
-      pets.forEach(({str}) => { rate += (str/100*5)*60*(1-Math.pow(1-0.27*str/100,1/60)); });
+      pets.forEach(({p, str}) => {
+        const tier = PGB[['PlantGrowthBoostIII','PlantGrowthBoostII','PlantGrowthBoost'].find(a => (p.abilities||[]).includes(a))];
+        rate += (str/100*tier.min)*60*(1-Math.pow(1-tier.c*str/100,1/60));
+      });
       growSec = growSec/(1+rate);
       growLabel += ` <span class="pill">PGB ×${pets.length}</span>`;
-    } else { notes.push('Plant Growth Boost checked but you own no PlantGrowthBoostII pet — grow time unreduced.'); }
+    } else { notes.push('Plant Growth Boost checked but you own no Plant Growth Boost pet — grow time unreduced.'); }
   }
   rows.push([growLabel, fmtTime(growSec)]);
 
@@ -467,27 +510,24 @@ function recalc(){
 
   // Max size — geometric boosts to each slot's maxScale
   if(sel.maxSize){
-    const II = top3(['ProduceScaleBoostII','Crop Size Boost II']);
+    // Crop Size Boost adds a flat number of size points (4 for I, 7 for II) to the garden's crops
+    // each time it fires, so the smallest crop sets how many firings a full farm needs.
+    const II = top3(['ProduceScaleBoostII']);
     const pool = II.length ? II : top3(['ProduceScaleBoost']);
-    const mult2 = II.length ? 0.40 : 0.30;
-    const abLabel = II.length ? 'ScaleBoostII' : 'ScaleBoost';
-    if(!pool.length){ rows.push(['<span class="warn">Max size</span>','<span class="warn">no boost pet</span>']); notes.push('No ProduceScaleBoost pet — max size can\'t be reached.'); }
+    const chance = II.length ? 0.40 : 0.30;
+    const step = II.length ? 7 : 4;
+    const abLabel = II.length ? 'Size Boost II' : 'Size Boost I';
+    if(!pool.length){ rows.push(['<span class="warn">Max size</span>','<span class="warn">no boost pet</span>']); notes.push('No Crop Size Boost pet — max size cannot be reached.'); }
     else {
-      const avgStr = pool.reduce((a,b)=>a+b.str,0)/pool.length;
-      const boostMult = 1 + (II.length ? 0.10 : 0.06) * avgStr/100;
-      // Each proc boosts EVERY slot at once, so procs needed = the worst slot's count.
-      let boosts = 0;
-      activeSlots.forEach(s => {
-        const ms = PLANTS[s.species].m; let sc = s.targetScale || 1;
-        if(sc>=ms) return; let b=0; while(sc<ms){ sc*=boostMult; b++; if(b>500)break; } boosts = Math.max(boosts, b);
-      });
-      const mw = meanWait(pool, mult2);
+      const smallest = activeSlots.reduce((min, s) => Math.min(min, slotSize(s)), 100);
+      const boosts = Math.ceil((100 - smallest) / step);
+      const mw = meanWait(pool, chance);
       if(mw!=null && boosts>0){
         const t = boosts * mw;
         rows.push([`Grow to max size <span class="pill">${abLabel} STR ${pool.map(x=>x.str).join('/')}</span>`, fmtTime(t)]);
         granterSec += t;
-        notes.push(`Max size: ${fmt(boosts)} boosts (whole garden per proc) × ${fmtTime(mw)}/proc (×${boostMult.toFixed(3)}/boost, STR ${pool.map(x=>x.str).join('/')}).`);
-      } else if(boosts===0){ rows.push(['Grow to max size','already max']); }
+        notes.push(`Max size: smallest crop at ${Math.round(smallest)}% needs ${fmt(boosts)} boosts of +${step} × ${fmtTime(mw)}/boost.`);
+      } else if(boosts<=0){ rows.push(['Grow to max size','already max']); }
     }
   }
 
